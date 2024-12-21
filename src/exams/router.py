@@ -2,9 +2,7 @@ import uuid
 from typing import List
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import get_async_session
 from src.exams.dependencies import get_exam_service
 from src.exams.schemas import ExamAnswerResponseSchema, ExamSchema
 from src.exams.service import ExamService
