@@ -2,7 +2,6 @@ from aiogram import Bot
 
 from src.competitions.service import RoomManager, WebSocketManager
 from src.database import get_redis
-from src.words.service import CacheRedisService
 from src.config import BOT_TOKEN
 
 
@@ -21,7 +20,3 @@ def get_websocket_manager() -> WebSocketManager:
 
 def get_room_manager() -> RoomManager:
     return room_manager
-
-
-def get_cache_service():
-    return CacheRedisService(get_redis())
