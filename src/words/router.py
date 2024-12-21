@@ -2,12 +2,10 @@ import redis
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.competitions.dependencies import get_cache_service
-from src.constants import AvailableLanguages
-from src.database import get_async_session, get_redis
-from src.quizzes.constants import AvailablePartOfSpeech, AvailableWordLevel
+from src.dependencies import get_redis_connect
+from src.database import get_async_session
+from src.dependencies import check_hash
 from src.quizzes.schemas import UserFavoriteWord
-from src.words.query import get_available_languages, get_available_part_of_speech
 from src.words.schemas import WordSchema, SentenceSchema
 from src.words.service import (FavoriteWordManager,
                                SentenceManager,
@@ -20,7 +18,8 @@ router = APIRouter(
 
 
 @router.post("/add-word")
-async def add_word(word_data: WordSchema, session: AsyncSession = Depends(get_async_session)
+async def add_word(
+        word_data: WordSchema, init_data: str = Depends(check_hash), session: AsyncSession = Depends(get_async_session)
 ):
     word_service = WordManager(session)
     return await word_service.add_word(word_data)
@@ -48,7 +47,7 @@ async def delete_favorite_word(data: UserFavoriteWord, session: AsyncSession = D
 @router.get("/check-available-language")
 async def check_available_language(
         session: AsyncSession = Depends(get_async_session),
-        cache_service: CacheRedisService = Depends(get_cache_service)
+        cache_service: CacheRedisService = Depends(get_redis_connect)
 ):
     word_manager = WordManager(session)
     available_languages = await word_manager.get_languages(cache_service)
@@ -58,7 +57,7 @@ async def check_available_language(
 @router.get("/check-available-part-of-speech")
 async def check_available_part_of_speech(
         session: AsyncSession = Depends(get_async_session),
-        cache_service: CacheRedisService = Depends(get_cache_service)
+        cache_service: CacheRedisService = Depends(get_redis_connect)
 ):
     word_manager = WordManager(session)
     return await word_manager.get_parts_of_speech(cache_service)
