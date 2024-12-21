@@ -15,7 +15,7 @@ from src.quizzes.schemas import (MatchWordsResponse, RandomSentenceResponse,
                                  RandomWordResponse)
 from src.quizzes.utils import (add_word_for_translate_to_other_words,
                                delete_punctuation, shuffle_random_words)
-from src.schemas import SentenceInfo, WordInfo
+from src.words.schemas import SentenceInfo, WordInfo
 from src.users.query import get_user_by_telegram_id
 
 

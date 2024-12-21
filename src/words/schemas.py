@@ -1,6 +1,6 @@
 import uuid
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, model_validator, UUID4, ConfigDict
 from src.constants import AvailableLanguages
 from src.quizzes.constants import AvailablePartOfSpeech, AvailableWordLevel
 
@@ -38,3 +38,14 @@ class SentenceSchema(BaseTranslationSchema):
         if values['sentence_to_translate'] == values['translation_sentence']:
             raise ValueError("Предложения должны отличаться друг от друга")
         return values
+
+
+class WordInfo(BaseModel):
+    id: UUID4
+    name: str
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SentenceInfo(BaseModel):
+    id: UUID4
+    name: str
