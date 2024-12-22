@@ -1,4 +1,3 @@
-import redis
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,7 +18,9 @@ router = APIRouter(
 
 @router.post("/add-word")
 async def add_word(
-        word_data: WordSchema, init_data: str = Depends(check_hash), session: AsyncSession = Depends(get_async_session)
+        word_data: WordSchema,
+        init_data: str = Depends(check_hash),
+        session: AsyncSession = Depends(get_async_session)
 ):
     word_service = WordManager(session)
     return await word_service.add_word(word_data)
