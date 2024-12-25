@@ -26,7 +26,7 @@ class UserService:
             return UserInfo(**new_user.__dict__)
 
     def prepare_data_for_create_user(self, user_data: UserCreate):
-        user_data = user_data.dict()
+        user_data = user_data.model_dump()
         user_data["learning_language_from_id"] = user_data["learning_language_from_id"].value
         user_data["learning_language_to_id"] = user_data["learning_language_to_id"].value
         return user_data
