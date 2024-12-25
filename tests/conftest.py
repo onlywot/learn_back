@@ -42,6 +42,6 @@ async def db_session(connection_test):
 async def client(db_session) -> TestClient:
     app.dependency_overrides[get_async_session] = lambda: db_session
     async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://127.0.0.1:1234/"
+        transport=ASGITransport(app=app), base_url="http://test/"
     ) as ac:
         yield ac
