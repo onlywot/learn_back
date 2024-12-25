@@ -1,21 +1,8 @@
 import pytest
-from sqlalchemy import func
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models import User, Language
-
-
-@pytest.mark.asyncio
-async def test_create_language(client, db_session: AsyncSession):
-    language_en = Language(language="English")
-    db_session.add(language_en)
-    language_ru = Language(language="Russian")
-    db_session.add(language_ru)
-    await db_session.commit()
-    result = await db_session.execute(select(func.count(Language.id)))
-    languages_count = result.scalar()
-    assert languages_count == 2
+from src.models import User
 
 
 @pytest.mark.asyncio
@@ -38,9 +25,9 @@ async def test_success_create_user(client):
 
 @pytest.mark.asyncio
 async def test_get_user_from_db(client, db_session: AsyncSession):
-    result = await db_session.execute(select(User))
+    result = await db_session.execute(select(User).where(User.telegram_id == 0))
     user = result.scalar()
-    assert user.id == 1
+    assert user.id == 2
     assert user.telegram_id == 0
     assert user.learning_language_from_id == 1
     assert user.learning_language_to_id == 2
@@ -52,12 +39,12 @@ async def test_get_user_data(client):
     response = await client.get("/user", params=data)
     assert response.status_code == 200
     response = response.json()
-    assert response["users_count"] == 1
-    assert len(response["users"]) == 1
-    assert response["users"][0]["id"] == 1
-    assert response["users"][0]["telegram_id"] == 0
-    assert response["users"][0]["learning_language_from_id"] == 1
-    assert response["users"][0]["learning_language_to_id"] == 2
+    assert response["users_count"] == 2
+    assert len(response["users"]) == 2
+    assert response["users"][1]["id"] == 2
+    assert response["users"][1]["telegram_id"] == 0
+    assert response["users"][1]["learning_language_from_id"] == 1
+    assert response["users"][1]["learning_language_to_id"] == 2
 
 
 @pytest.mark.asyncio
@@ -73,9 +60,9 @@ async def test_change_user_learn_language(client):
 
 @pytest.mark.asyncio
 async def test_get_update_user_data_from_db(client, db_session: AsyncSession):
-    result = await db_session.execute(select(User))
+    result = await db_session.execute(select(User).where(User.telegram_id == 0))
     user = result.scalar()
-    assert user.id == 1
+    assert user.id == 2
     assert user.telegram_id == 0
     assert user.learning_language_from_id == 2
     assert user.learning_language_to_id == 1
@@ -87,9 +74,9 @@ async def test_get_update_user_data(client):
     response = await client.get("/user", params=data)
     assert response.status_code == 200
     response = response.json()
-    assert response["users"][0]["telegram_id"] == 0
-    assert response["users"][0]["learning_language_from_id"] == 2
-    assert response["users"][0]["learning_language_to_id"] == 1
+    assert response["users"][1]["telegram_id"] == 0
+    assert response["users"][1]["learning_language_from_id"] == 2
+    assert response["users"][1]["learning_language_to_id"] == 1
 
 
 @pytest.mark.asyncio
