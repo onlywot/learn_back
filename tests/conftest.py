@@ -69,6 +69,11 @@ async def populate_bd(connection_test):
             await session.flush()
             translation_word = TranslationWord(word_id=word.id, from_language_id=2, to_language_id=1, name=f"строка{i}")
             session.add(translation_word)
+            word = Word(name=f"string{i}", language_id=2, part_of_speech="noun", level="A1")
+            session.add(word)
+            await session.flush()
+            translation_word = TranslationWord(word_id=word.id, from_language_id=1, to_language_id=2, name=f"строка{i}")
+            session.add(translation_word)
 
         # add sentence
         sentence = Sentence(name=f"Hello, word", language_id=1, level="A1")
@@ -85,8 +90,8 @@ async def populate_bd(connection_test):
             first_name="first_name",
             photo_url="photo_url",
             username="username",
-            learning_language_from_id=2,
-            learning_language_to_id=1,
+            learning_language_from_id=1,
+            learning_language_to_id=2,
         )
         session.add(user)
 
